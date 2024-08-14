@@ -68,6 +68,11 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-real-estate-api-for-proper
 require plugin_dir_path( __FILE__ ) . 'admin/import-property-listing.php';
 
 /**
+ * API Endpoints
+ */
+require plugin_dir_path( __FILE__ ) . 'admin/api_endpoints.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
