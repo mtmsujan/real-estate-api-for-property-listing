@@ -155,6 +155,7 @@ function reapi_get_single_property_import()
     update_post_meta($property_id, 'car_park', $property_carports);
     update_post_meta($property_id, 'pet', 0);
     update_post_meta($property_id, 'property_description', $property_description);
+    update_post_meta($property_id, 'enquire_button', home_url('contact'));
 
     update_post_meta($property_id, 'features', $property_all_features);
 
