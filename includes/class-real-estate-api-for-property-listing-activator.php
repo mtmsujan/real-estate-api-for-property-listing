@@ -31,6 +31,22 @@ class Real_Estate_Api_For_Property_Listing_Activator {
 	 */
 	public static function activate() {
 
-	}
+		global $wpdb;
+        $table_name = $wpdb->prefix . 'sync_propertys';
+        
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            id INT AUTO_INCREMENT,
+            unique_id varchar(255) NOT NULL,
+            status varchar(255) NOT NULL,
+            value text NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+            PRIMARY KEY (id)
+        )";
+        
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+    }
 
 }

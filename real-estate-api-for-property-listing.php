@@ -64,6 +64,9 @@ register_deactivation_hook( __FILE__, 'deactivate_real_estate_api_for_property_l
  */
 require plugin_dir_path( __FILE__ ) . 'includes/class-real-estate-api-for-property-listing.php';
 
+// Inculd fetch api function file
+require plugin_dir_path( __FILE__ ) . 'admin/fetch-api-property-import-to-db.php';
+
 // Import Property Listing File
 require plugin_dir_path( __FILE__ ) . 'admin/import-property-listing.php';
 
