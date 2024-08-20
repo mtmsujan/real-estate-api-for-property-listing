@@ -12,6 +12,11 @@ function reapi_rest_api_init() {
         'methods' => 'GET',
         'callback' => 'reapi_get_single_property'
     ]);
+
+    register_rest_route( 'reapi/v1', '/total_item_table', [
+        'methods' => 'GET',
+        'callback' => 'total_items'
+    ]);
 }
 
 
@@ -22,5 +27,10 @@ function reapi_get_property_import_array() {
 function reapi_get_single_property() {
     return reapi_get_single_property_import();
 }
+
+function total_items() {
+    return get_total_items_from_sync_propertys();
+}
+
 
 

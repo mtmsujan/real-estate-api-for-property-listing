@@ -1,6 +1,7 @@
 <?php
 
-function reapi_get_single_property_import() {
+function reapi_get_single_property_import()
+{
     global $wpdb;
     $table_name = $wpdb->prefix . 'sync_propertys';
 
@@ -9,7 +10,7 @@ function reapi_get_single_property_import() {
     );
     $serial_id = $properties[0]->id;
     $properties = json_decode($properties[0]->value, true);
-    
+
     // Extract Property Attributes
     $property_attributes = $properties['@attributes'] ?? [];
     $property_status = $property_attributes['status'] ?? '';
@@ -84,10 +85,10 @@ function reapi_get_single_property_import() {
         'ductedCooling' => $property_features['ductedCooling'] ?? 0,
         'intercom' => $property_features['intercom'] ?? 0,
         'poolInGround' => $property_features['poolInGround'] ?? 0,
-    ], function($value) {
+    ], function ($value) {
         return $value !== 0;
     })));
-    
+
 
     // Extract Allowances
     $property_allowances = $properties['allowances'] ?? [];
@@ -101,7 +102,7 @@ function reapi_get_single_property_import() {
     // Extract Property Images
     $images = []; // Initialize $images as an empty array
 
-    foreach($properties['objects']['img'] as $image) {
+    foreach ($properties['objects']['img'] as $image) {
         $url = $image['@attributes']['url'] ?? ''; // Get the image URL, or an empty string if it doesn't exist
         if ($url) {
             $images[] = $url; // Add the image URL to the $images array
@@ -130,13 +131,16 @@ function reapi_get_single_property_import() {
         $existing_property->the_post();
         $property_id = get_the_ID();
     } else {
-        // Property does not exist, create a new one
-        $property_id = wp_insert_post(array(
-            'post_title' => $property_headline,
-            'post_content' => $property_description,
-            'post_status' => 'publish',
-            'post_type' => 'property',
-        ));
+        if ($properties) {
+            // Property does not exist, create a new one
+            $property_id = wp_insert_post(array(
+                'post_title' => $property_headline,
+                'post_content' => $property_description,
+                'post_status' => 'publish',
+                'post_type' => 'property',
+            ));
+        }
+
     }
 
     // Insert or Update Property Attributes and Other Meta Fields
@@ -195,22 +199,30 @@ function reapi_get_single_property_import() {
     update_post_meta($property_id, '_property_smokers', $property_smokers);
     update_post_meta($property_id, '_property_furnished', $property_furnished);
 
-    
+
     set_property_images_gallery($property_id, $images);
 
     // set property featured image and banar image
     set_featured_image_for_proparty($property_id, $image_url);
 
     // Update the status of the processed Property in your database
-            $wpdb->update(
-                $table_name,
-                ['status' => 'completed'],
-                ['id' => $serial_id]
-            );
+    $wpdb->update(
+        $table_name,
+        ['status' => 'completed'],
+        ['id' => $serial_id]
+    );
     // Reset post data
     wp_reset_postdata();
 
- return "Property imported successfully.";
+    return "Property imported successfully.";
+}
+
+function get_total_items_from_sync_propertys()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'sync_propertys';
+    $total_items = $wpdb->get_var("SELECT COUNT(*) FROM $table_name WHERE status = 'panding'");
+    var_dump($total_items);
 }
 
 function set_property_images_gallery($property_id, $images)
@@ -252,8 +264,8 @@ function set_property_images_gallery($property_id, $images)
             }
         }
 
-        if (!empty($gallery_ids) && is_array($gallery_ids)) {            
-            
+        if (!empty($gallery_ids) && is_array($gallery_ids)) {
+
             // Update the post meta with the unserialized array
             update_post_meta($property_id, 'property_gallery', $gallery_ids);
         }
@@ -262,10 +274,11 @@ function set_property_images_gallery($property_id, $images)
 
 
 // Set Property Thumbnail function
-function set_featured_image_for_proparty($property_id, $image_url) {
+function set_featured_image_for_proparty($property_id, $image_url)
+{
     // Check if image URL is not empty
     if (empty($image_url)) {
-        echo 'Error: Image URL is empty.';
+        // echo 'Error: Image URL is empty.';
         return false; // Indicate failure
     }
 
