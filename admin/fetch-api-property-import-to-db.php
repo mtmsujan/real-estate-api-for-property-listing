@@ -1,4 +1,10 @@
 <?php
+// TRUNCATE Table
+function real_truncate_table( $table_name ) {
+    global $wpdb;
+    $wpdb->query( "TRUNCATE TABLE $table_name" );
+}
+
 // Insert Property In Database
 function insert_property_in_db(){
 
@@ -72,6 +78,9 @@ function insert_property_import_array_in_db() {
     // Get global $wpdb object
     global $wpdb;
     $table_name = $wpdb->prefix . 'sync_propertys';
+
+    // Truncate table
+    real_truncate_table( $table_name );
     
     // Loop through each property and insert it into the database
     foreach ($properties['rental'] as $property) {
