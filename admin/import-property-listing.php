@@ -38,6 +38,38 @@ function reapi_get_single_property_import()
     $property_postcode = $property_address['postcode'] ?? '';
     $property_country = $property_address['country'] ?? '';
 
+    // Store values in a new array
+    $full_property_address = [
+        'street' => $property_street,
+        'suburb' => $property_suburb,
+        'state' => $property_state,
+        'postcode' => $property_postcode
+    ];
+    // Function to concatenate array values into a single string
+    function mergeArrayValues($array) {
+        $result = '';
+
+        // Recursive function to handle nested arrays
+        $recursiveMerge = function($arr) use (&$result, &$recursiveMerge) {
+            foreach ($arr as $value) {
+                if (is_array($value)) {
+                    $recursiveMerge($value);
+                } else {
+                    $result .= $value . ', ';
+                }
+            }
+        };
+
+        $recursiveMerge($array);
+        // Remove the trailing comma and space if present
+        return rtrim($result, ', ');
+    }
+
+    // Merge array values
+    $merge_full_property_address = mergeArrayValues($full_property_address);
+
+    
+
     // Extract Category
     $property_category = $properties['category'] ?? '';
 
@@ -149,7 +181,7 @@ function reapi_get_single_property_import()
     // add Property Category
     wp_set_post_terms($property_id, $property_status, 'property_category');
     update_post_meta($property_id, 'tagline', $property_agentName);
-    update_post_meta($property_id, 'address', $property_street);
+    update_post_meta($property_id, 'address', $merge_full_property_address);
     update_post_meta($property_id, 'price', $property_rent);
     // update_post_meta($property_id, 'price_suffix', $property_priceSuffix);
     update_post_meta($property_id, 'bedrooms', $property_bedrooms);
