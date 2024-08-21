@@ -43,7 +43,8 @@ function reapi_get_single_property_import()
         'street' => $property_street,
         'suburb' => $property_suburb,
         'state' => $property_state,
-        'postcode' => $property_postcode
+        'postcode' => $property_postcode,
+        'country' => $property_country
     ];
     // Function to concatenate array values into a single string
     function mergeArrayValues($array) {
