@@ -146,6 +146,8 @@ function reapi_get_single_property_import()
     // Insert or Update Property Attributes and Other Meta Fields
     update_post_meta($property_id, '_property_attributes', json_encode($property_attributes));
     update_post_meta($property_id, 'rental_status', $property_status);
+    // add Property Category
+    wp_set_post_terms($property_id, $property_status, 'property_category');
     update_post_meta($property_id, 'tagline', $property_agentName);
     update_post_meta($property_id, 'address', $property_street);
     update_post_meta($property_id, 'price', $property_rent);
